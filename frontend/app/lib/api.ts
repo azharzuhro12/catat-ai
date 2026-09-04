@@ -4,11 +4,32 @@ const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8002/api/v1'
 
 const api = axios.create({
   baseURL: BASE,
-  timeout: 30000,
+  timeout: 60000, // longgar — serverless bisa cold start + panggilan AI
   headers: {
     'ngrok-skip-browser-warning': 'true',
   }
 })
+
+// Kompres foto struk di browser sebelum upload (host serverless membatasi body ~4.5MB,
+// foto kamera HP bisa 3–8MB). Gagal kompres → kirim file asli.
+export async function kompresGambar(file: File, maksSisi = 1600, kualitas = 0.8): Promise<File> {
+  if (file.size <= 1_500_000) return file // sudah kecil, tidak perlu
+  try {
+    const bitmap = await createImageBitmap(file)
+    const skala = Math.min(1, maksSisi / Math.max(bitmap.width, bitmap.height))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(bitmap.width * skala)
+    canvas.height = Math.round(bitmap.height * skala)
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return file
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', kualitas))
+    if (!blob || blob.size >= file.size) return file
+    return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
+  } catch {
+    return file
+  }
+}
 
 // ── Transaksi ────────────────────────────────────────────────
 
@@ -28,8 +49,9 @@ export async function kirimSuara(audioBlob: Blob, userId: string) {
 }
 
 export async function kirimStruk(file: File, userId: string) {
+  const foto = await kompresGambar(file)
   const form = new FormData()
-  form.append('foto', file)
+  form.append('foto', foto)
   form.append('user_id', userId)
   const res = await api.post('/transaksi/scan-struk', form, {
     headers: { 'Content-Type': 'multipart/form-data', 'ngrok-skip-browser-warning': 'true' },
