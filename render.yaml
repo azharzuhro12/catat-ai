@@ -1,0 +1,25 @@
+# Blueprint deploy backend CatatAI ke Render
+# Cara pakai: Render Dashboard → New → Blueprint → pilih repo ini → isi API key saat diminta
+services:
+  - type: web
+    name: catat-ai-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: GROQ_API_KEY
+        sync: false          # diisi di dashboard (secret)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false          # WAJIB service_role — backend butuh bypass RLS
+      - key: SECRET_KEY
+        generateValue: true  # dibuat otomatis oleh Render
+      - key: ENVIRONMENT
+        value: production

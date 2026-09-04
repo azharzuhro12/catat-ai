@@ -1,0 +1,10 @@
+# Versi minimum kompatibel Python 3.11 s/d 3.14
+fastapi>=0.115
+uvicorn[standard]>=0.32
+python-dotenv>=1.0.1
+pydantic>=2.12
+pydantic-settings>=2.7
+supabase>=2.15
+groq>=1.0
+pytz>=2024.1
+python-multipart>=0.0.20

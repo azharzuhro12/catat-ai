@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+venv/
+
+# Build
+.next/
+__pycache__/
+
+# Environment (jangan pernah commit)
+.env
+.env.local
+
+# Misc
+.DS_Store
