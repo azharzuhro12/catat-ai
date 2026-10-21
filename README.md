@@ -197,5 +197,3 @@ npx vercel deploy --prod
 - [`docs/SETUP.md`](docs/SETUP.md) — panduan instalasi lengkap per-OS
 - [`docs/STRUCTURE.md`](docs/STRUCTURE.md) — struktur folder detail + checklist demo
 - [`supabase/schema.sql`](supabase/schema.sql) — skema database
-
-## 📄 License
