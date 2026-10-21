@@ -199,9 +199,3 @@ npx vercel deploy --prod
 - [`supabase/schema.sql`](supabase/schema.sql) — skema database
 
 ## 📄 License
-
-Distribusi di bawah lisensi MIT — lihat [LICENSE](LICENSE).
-
----
-
-Dibuat dengan ☕ + 🤖 oleh [azharzuhro12](https://github.com/azharzuhro12)
